@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+}
+
+
+body {
+  background: #1c1b29; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Contenedor tamagotchi */
+.tamagotchi {
+  background: #e0dff7;
+  padding: 30px;
+  border-radius: 20px;
+  border: 6px solid #47457a;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+/* Pantalla */
+.screen {
+  background: #b8b7e5;
+  border: 5px solid #4a467f;
+  width: 280px;
+  padding: 20px;
+  image-rendering: pixelated;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Corazones */
+.hearts {
+  display: flex;
+  gap: 5px;
+}
+
+.heart {
+  width: 28px;
+}
+
+/* Mascota */
+.pet img {
+  width: 150px;
+}
+
+/* Comida */
+.foods {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.foods img {
+  width: 80px;
+  height: 80px;
+}
+
+.food-btn {
+  background: #4a467f;
+  border: 3px solid #2e2b52;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.1s;
+}
+
+.food-btn:hover {
+  transform: scale(1.1);
+}
+
+.food-btn img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+.small-food {
+  width: 200px;      
+  height: 200px;
+}

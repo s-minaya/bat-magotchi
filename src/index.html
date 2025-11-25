@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bat-magotchi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./scss/main.scss" />
+    <link rel="icon" href="/images/favicon.png" />
+  </head>
+
+  <body>
+    <div class="tamagotchi">
+      <!-- Pantalla principal -->
+      <div class="screen">
+        <!-- Vida: corazones -->
+        <div class="hearts">
+          <img
+            src="https://placehold.co/100x100/png"
+            class="heart"
+            alt="Corazón"
+          />
+          <img
+            src="https://placehold.co/100x100/png"
+            class="heart"
+            alt="Corazón"
+          />
+          <img
+            src="https://placehold.co/100x100/png"
+            class="heart"
+            alt="Corazón"
+          />
+        </div>
+
+        <!-- Bat-magotchi -->
+        <div class="pet">
+          <img src="/images/Happy-bat.gif" alt="Batagotchi" />
+        </div>
+
+        <!-- Opciones de comida -->
+        <div class="foods">
+          <button class="food-btn">
+            <img src="/images/Ajo.gif" alt="Comida 1" />
+          </button>
+          <button class="food-btn">
+            <img
+              src="/images/Lunar-fruit.png"
+              class="food small-food"
+              alt="Comida 2"
+            />
+          </button>
+          <button class="food-btn">
+            <img src="/images/Bug.png" alt="Comida 3" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
