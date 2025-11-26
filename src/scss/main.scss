@@ -47,6 +47,7 @@ body {
 
 .heart {
   width: 28px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Mascota */
@@ -82,6 +83,13 @@ body {
 .food-btn img {
   width: 45px;
   height: 45px;
+}
+
+/*Animación para cuando un corazón cambia de estado */
+
+.heart--anim {
+  opacity: 0;
+  transform: scale(0.5);
 }
 
 @media (min-width: 480px) {
@@ -201,3 +209,4 @@ body {
     height: 100px;
   }
 }
+
