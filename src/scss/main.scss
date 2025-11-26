@@ -91,6 +91,31 @@ body {
   opacity: 0;
   transform: scale(0.5);
 }
+.start-btn {
+   font-family: "Pixelify Sans", sans-serif;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 12px;
+  background: #524d8a;
+  color: #ffffff;
+  border: 0;
+  padding: 10px 14px;
+  box-shadow: 
+    0px 0px 0px 4px #2e2b52,
+    0px 4px 0px 4px #1b1934;
+  cursor: pointer;
+  image-rendering: pixelated;
+  transition: transform 0.1s;
+}
+
+/* EFECTO "PULSAR" TIPO BOTÓN GAME BOY */
+.start-btn:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0px 0px 0px 4px #2e2b52,
+    0px 2px 0px 4px #1b1934;
+}
 
 @media (min-width: 480px) {
   .screen {

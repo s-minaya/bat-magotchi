@@ -1,6 +1,7 @@
 "use strict";
 
 // SECCIÓN DE QUERY-SELECTOR
+const startBtn = document.querySelector("#startAudio");
 
 // Corazones
 const hearts = document.querySelectorAll(".heart");
@@ -26,6 +27,16 @@ let currentHeartIndex = hearts.length - 1; //Empezamos desde el último corazón
 let currentState = 0; // 0 = lleno, 1 = medio, 2 = vacío
 let emptyHeartsCount = 0;
 
+// =======================
+//       MÚSICA
+// =======================
+
+const soundEffect = new Audio("/sounds/heart-down.mp3");
+
+const bgMusic = new Audio("/sounds/background.ogg");
+bgMusic.loop = true;
+bgMusic.volume = 0.2;
+
 // SECCIÓN DE FUNCIONES
 
 // Efecto suave cuando un corazón cambia de estado
@@ -42,33 +53,56 @@ function animateHeart(heartElement) {
 // =======================
 
 function degradeHeart() {
-  //Si no quedan corazones por degradar...
+  // Si no quedan corazones por degradar...
   if (currentHeartIndex < 0) {
     clearInterval(heartInterval);
     return;
   }
 
-  const heart = hearts[currentHeartIndex]; //Guardamos la posición de la imágen de cada corazón
+  const heart = hearts[currentHeartIndex]; //Referencia al corazón actual
 
   // PASO 1 → lleno → medio
   if (currentState === 0) {
     heart.src = heartStates.half;
     animateHeart(heart);
+    soundEffect.currentTime = 0;
+    soundEffect.play();
     currentState = 1;
 
     // PASO 2 → medio → vacío
   } else if (currentState === 1) {
     heart.src = heartStates.empty;
     animateHeart(heart);
+    soundEffect.currentTime = 0;
+    soundEffect.play();
     currentState = 2;
-    emptyHeartsCount++;
-    updateBatState();
 
-    // PASO 3 → si ya está vacío, saltamos al siguiente corazón
+    emptyHeartsCount++;
+
+    // Si este corazón era el último que quedaba con vida:
+    if (emptyHeartsCount >= hearts.length) {
+      // Cambiar GIF del murciélago
+      bat.src = batStates.dead;
+
+      // Cambiar música
+      bgMusic.pause();
+      bgMusic.src = "/sounds/game-over.mp3";
+      bgMusic.currentTime = 0;
+      bgMusic.volume = 1.0;
+
+      // reproducir la nueva música
+      bgMusic.play().catch(() => {
+        console.log("El navegador bloqueó el autoplay de la música de muerte.");
+      });
+    } else {
+      updateBatState();
+    }
+
+    // PASO 3 → si ya está vacío → pasamos al corazón anterior
   } else {
     currentHeartIndex--;
     currentState = 0;
-    degradeHeart(); // se ejecuta inmediatamente, sin esperar los 10s
+    degradeHeart();
   }
 }
 
@@ -86,14 +120,15 @@ function updateBatState() {
 }
 
 // SECCIÓN DE FUNCIONES DE EVENTOS
-// Aquí van las funciones handler/manejadoras de eventos
 
-// SECCIÓN DE EVENTOS
-// Éstos son los eventos a los que reacciona la página
-// Los más comunes son: click (en botones, enlaces), input (en ídem) y submit (en form)
+startBtn.addEventListener("click", () => {
+  if (bgMusic.paused) {
+    bgMusic.play();
+    startBtn.textContent = "⏸ Parar";
+  } else {
+    bgMusic.pause();
+    startBtn.textContent = "▶ Empezar";
+  }
+});
 
 // SECCIÓN DE ACCIONES AL CARGAR LA PÁGINA
-// Este código se ejecutará cuando se carga la página
-// Lo más común es:
-//   - Pedir datos al servidor
-//   - Pintar (render) elementos en la página
