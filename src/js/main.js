@@ -25,6 +25,9 @@ const batStates = {
   dead: "/images/Dead-bat.gif",
 };
 
+// Comida
+const foodBtns = document.querySelectorAll(".js_foodBtn");
+
 // SECCIÓN DE DATOS
 const intervalTime = 10000; //Tiempo entre degradaciones
 
@@ -114,6 +117,9 @@ function degradeHeart() {
 }
 
 function updateBatState() {
+  // Si está comiendo o en animación → no cambiar estado automático
+  if (bat.dataset.busy === "true") return;
+
   if (emptyHeartsCount === 1) {
     bat.src = batStates.sad;
   } else if (emptyHeartsCount === 2) {
@@ -121,6 +127,45 @@ function updateBatState() {
   } else if (emptyHeartsCount >= hearts.length) {
     bat.src = batStates.dead;
   }
+}
+
+function getRealBatState() {
+  if (emptyHeartsCount >= hearts.length) return batStates.dead;
+  if (emptyHeartsCount === 2) return batStates.hungry;
+  if (emptyHeartsCount === 1) return batStates.sad;
+  return batStates.normal;
+}
+
+function handleFood(foodType) {
+  if (bat.dataset.busy === "true") return;
+  bat.dataset.busy = "true";
+
+  let prevState = getRealBatState();
+
+  // ANIMACIÓN 1 → Comiendo
+  bat.src = "/images/Eating-bat.gif?rnd=" + Date.now();
+  const eatingDuration = 1780;
+
+  setTimeout(() => {
+    if (foodType === "ajo") {
+      bat.src = "/images/No-bat.gif?rnd=" + Date.now();
+
+      setTimeout(() => {
+        bat.src = getRealBatState();
+        bat.dataset.busy = "false";
+      }, 2000);
+    } else if (foodType === "melon") {
+      bat.src = getRealBatState();
+      bat.dataset.busy = "false";
+    } else if (foodType === "polilla") {
+      bat.src = "/images/Love-this-food.gif?rnd=" + Date.now();
+
+      setTimeout(() => {
+        bat.src = getRealBatState();
+        bat.dataset.busy = "false";
+      }, 2000);
+    }
+  }, eatingDuration);
 }
 
 // SECCIÓN DE FUNCIONES DE EVENTOS
@@ -167,6 +212,16 @@ introStart.addEventListener("click", () => {
     },
     { once: true }
   );
+});
+
+foodBtns.forEach((button) => {
+  const foodImg = button.querySelector("img");
+  const foodType = foodImg.alt.toLowerCase();
+  console.log(foodType);
+
+  button.addEventListener("click", () => {
+    handleFood(foodType);
+  });
 });
 
 // SECCIÓN DE ACCIONES AL CARGAR LA PÁGINA
