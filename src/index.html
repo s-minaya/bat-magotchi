@@ -11,45 +11,89 @@
       rel="stylesheet"
     />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
-
     <link rel="stylesheet" href="./scss/main.scss" />
     <link rel="icon" href="/images/fav-icon.png" />
   </head>
 
   <body>
+    <section class="intro js_intro">
+      <div class="intro__content">
+        <img
+          src="/images/Landing.png"
+          class="intro__image"
+          alt="Bat-magotchi"
+        />
+        <div class="intro__body">
+          <h2 class="intro__title">¡Bienvenido a Bat-magotchi!</h2>
+
+          <p class="intro__text">
+            No dejes que tu bat-magotchi se muera. Si los corazones llegan a 0…
+            ¡game over! Puedes evitarlo dándole de comer.
+          </p>
+
+          <button id="introStart" class="intro__button">Empezar juego</button>
+        </div>
+      </div>
+    </section>
     <div class="tamagotchi">
-      <button id="startAudio" class="start-btn">▶ Empezar</button>
+      <button id="startAudio" class="tamagotchi__start-button">
+        ▶ Empezar
+      </button>
       <!-- Pantalla principal -->
-      <div class="screen">
+      <section class="tamagotchi__screen">
         <!-- Vida: corazones -->
-        <div class="hearts">
-          <img src="/images/Full-heart.png" class="heart" alt="Corazón" />
-          <img src="/images/Full-heart.png" class="heart" alt="Corazón" />
-          <img src="/images/Full-heart.png" class="heart" alt="Corazón" />
+        <div class="tamagotchi__hearts">
+          <img
+            src="/images/Full-heart.png"
+            class="tamagotchi__heart js_heart"
+            alt="Corazón"
+          />
+          <img
+            src="/images/Full-heart.png"
+            class="tamagotchi__heart js_heart"
+            alt="Corazón"
+          />
+          <img
+            src="/images/Full-heart.png"
+            class="tamagotchi__heart js_heart"
+            alt="Corazón"
+          />
         </div>
 
         <!-- Bat-magotchi -->
-        <div class="pet">
-          <img class="js_bat" src="/images/Happy-bat.gif" alt="Batagotchi" />
+        <div class="tamagotchi__pet">
+          <img
+            class="tamagotchi__pet-image js_bat"
+            src="/images/Happy-bat.gif"
+            alt="Batmagotchi"
+          />
         </div>
 
         <!-- Opciones de comida -->
-        <div class="foods">
-          <button class="food-btn">
-            <img src="/images/Ajo.gif" alt="Comida 1" />
+        <div class="tamagotchi__foods">
+          <button class="tamagotchi__food-button">
+            <img
+              class="tamagotchi__food-image"
+              src="/images/Garlic.png"
+              alt="Comida 1"
+            />
           </button>
-          <button class="food-btn">
-            <img src="/images/Lunar fruit.png" alt="Comida 2" />
+          <button class="tamagotchi__food-button">
+            <img
+              class="tamagotchi__food-image"
+              src="/images/Melon.png"
+              alt="Comida 2"
+            />
           </button>
-          <button class="food-btn">
-            <img src="/images/Bug.png" alt="Comida 3" />
+          <button class="tamagotchi__food-button">
+            <img
+              class="tamagotchi__food-image"
+              src="/images/Moth.png"
+              alt="Comida 3"
+            />
           </button>
         </div>
-      </div>
+      </section>
     </div>
     <script src="./js/main.js"></script>
   </body>

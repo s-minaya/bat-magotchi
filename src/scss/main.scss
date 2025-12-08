@@ -1,88 +1,277 @@
+// VARIABLES
+$bg-dark: black;
+$violet-light: #e0dff7;
+$violet: #4a467f;
+$violet-dark: #2e2b52;
+
+$pixel-font: "Pixelify Sans", sans-serif;
+$main-font: "Jacquard 12", sans-serif;
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+html {
+  font-size: 62.5%;
 }
-
 
 body {
-  background: #1c1b29; 
+  font-family: $main-font;
+  font-size: 1.6rem;
+  background: $bg-dark;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100dvh;
 }
 
-/* Contenedor tamagotchi */
 .tamagotchi {
-  background: #e0dff7;
-  padding: 30px;
-  border-radius: 20px;
+  background: $violet-light;
+  padding: 3rem;
+  border-radius: 2rem;
   border: 6px solid #47457a;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+
+  &__start-button {
+    font-family: $pixel-font;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #524d8a;
+    color: #fff;
+    border: 0;
+    padding: 1rem 1.4rem;
+    cursor: pointer;
+    image-rendering: pixelated;
+
+    box-shadow: 0 0 0 4px $violet-dark, 0 4px 0 4px #1b1934;
+
+    &:active {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 4px $violet-dark, 0 2px 0 4px #1b1934;
+    }
+  }
+
+  &__screen {
+    background: #b8b7e5;
+    border: 5px solid $violet;
+    width: 280px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    image-rendering: pixelated;
+  }
+
+  &__hearts {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__heart {
+    width: 28px;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  &__pet {
+    width: 150px;
+  }
+
+  &__pet-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__food-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__foods {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  &__food-button {
+    width: 64px;
+    height: 64px;
+    background: $violet;
+    border: 3px solid $violet-dark;
+    border-radius: 0.8rem;
+    padding: 0.6rem;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 }
 
-/* Pantalla */
-.screen {
-  background: #b8b7e5;
-  border: 5px solid #4a467f;
-  width: 280px;
-  padding: 20px;
-  image-rendering: pixelated;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Corazones */
-.hearts {
-  display: flex;
-  gap: 5px;
-}
-
-.heart {
-  width: 28px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Mascota */
-.pet img {
-  width: 150px;
-}
-
-/* Comida */
-.foods {
+.intro {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
-  gap: 15px;
-}
-.foods img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+  align-items: center;
+  z-index: 10;
+
+  animation: intro-slide-down 1.2s ease-out forwards;
+
+  &__content {
+    margin-top: 4rem;
+    background: $bg-dark;
+    color: $violet-light;
+    border: 5px solid $violet;
+    border-radius: 1.6rem;
+    padding: 1.6rem;
+    width: 90%;
+    max-width: 320px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+
+    text-align: center;
+  }
+
+  &__image {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  &__title {
+    font-size: 3rem;
+  }
+
+  &__text {
+    font-family: $pixel-font;
+    font-size: 1.5rem;
+    line-height: 1.4;
+  }
+
+  &__button {
+    font-family: $pixel-font;
+    padding: 1rem 1.6rem;
+    background: $violet;
+    color: white;
+    border: 3px solid $violet-dark;
+    cursor: pointer;
+  }
 }
 
-.food-btn {
-  background: #4a467f;
-  border: 3px solid #2e2b52;
-  padding: 5px;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: transform 0.1s;
+// MEDIA QUERIES
+
+@media (min-width: 768px) {
+  .tamagotchi {
+    padding: 4rem;
+
+    &__screen {
+      width: 360px;
+      padding: 2.6rem;
+    }
+
+    &__pet {
+      width: 190px;
+    }
+
+    &__foods {
+      gap: 2rem;
+    }
+
+    &__food-button {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  .intro {
+    align-items: flex-start;
+
+    &__content {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      max-width: 700px;
+      gap: 2.4rem;
+    }
+
+    &__image {
+      flex-shrink: 0;
+      width: 40%;
+      max-width: 320px;
+    }
+  }
 }
 
-.food-btn:hover {
-  transform: scale(1.1);
+@media (min-width: 1024px) {
+  .tamagotchi {
+    &__screen {
+      width: 420px;
+      padding: 3rem;
+    }
+
+    &__pet {
+      width: 220px;
+    }
+
+    &__food-button {
+      width: 96px;
+      height: 96px;
+    }
+  }
 }
 
-.food-btn img {
-  width: 45px;
-  height: 45px;
+@media (min-width: 1440px) {
+  .tamagotchi {
+    &__screen {
+      width: 520px;
+    }
+
+    &__pet {
+      width: 290px;
+    }
+
+    &__food-button {
+      width: 112px;
+      height: 112px;
+    }
+  }
+}
+
+// Animaciones
+@keyframes intro-slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes intro-slide-up {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
 }
 
 /*Animación para cuando un corazón cambia de estado */
@@ -91,147 +280,6 @@ body {
   opacity: 0;
   transform: scale(0.5);
 }
-.start-btn {
-   font-family: "Pixelify Sans", sans-serif;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 12px;
-  background: #524d8a;
-  color: #ffffff;
-  border: 0;
-  padding: 10px 14px;
-  box-shadow: 
-    0px 0px 0px 4px #2e2b52,
-    0px 4px 0px 4px #1b1934;
-  cursor: pointer;
-  image-rendering: pixelated;
-  transition: transform 0.1s;
+.intro--closing {
+  animation: intro-slide-up 2s ease-in forwards;
 }
-
-/* EFECTO "PULSAR" TIPO BOTÓN GAME BOY */
-.start-btn:active {
-  transform: translateY(2px);
-  box-shadow: 
-    0px 0px 0px 4px #2e2b52,
-    0px 2px 0px 4px #1b1934;
-}
-
-@media (min-width: 480px) {
-  .screen {
-    width: 300px;
-    padding: 22px;
-  }
-
-  .pet img {
-    width: 160px;
-  }
-
-  .foods img {
-    width: 70px;
-    height: 70px;
-  }
-
-  .food-btn img {
-    width: 55px;
-    height: 55px;
-  }
-}
-
-
-@media (min-width: 768px) {
-  .tamagotchi {
-    padding: 40px;
-  }
-
-  .screen {
-    width: 360px;
-    padding: 26px;
-  }
-
-  .pet img {
-    width: 190px;
-  }
-
-  .foods {
-    gap: 20px;
-  }
-
-  .foods img {
-    width: 85px;
-    height: 85px;
-  }
-
-  .food-btn img {
-    width: 65px;
-    height: 65px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .screen {
-    width: 420px;
-    padding: 30px;
-  }
-
-  .pet img {
-    width: 220px;
-  }
-
-  .foods img {
-    width: 95px;
-    height: 95px;
-  }
-
-  .food-btn img {
-    width: 75px;
-    height: 75px;
-  }
-}
-
-
-@media (min-width: 1280px) {
-  .tamagotchi {
-    padding: 55px;
-  }
-
-  .screen {
-    width: 480px;
-  }
-
-  .pet img {
-    width: 260px;
-  }
-
-  .foods img{
-    width: 110px;
-    height: 110px;
-  }
-
-  .food-btn img {
-    width: 85px;
-    height: 85px;
-  }
-}
-
-
-@media (min-width: 1440px) {
-  .screen {
-    width: 520px;
-  }
-
-  .pet img {
-    width: 290px;
-  }
-
-  .foods img {
-    width: 120px;
-    height: 120px;
-  }
-
-  .food-btn img {
-    width: 100px;
-    height: 100px;
-  }
-}
-

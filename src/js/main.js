@@ -3,21 +3,26 @@
 // SECCIÓN DE QUERY-SELECTOR
 const startBtn = document.querySelector("#startAudio");
 
+// Intro
+const intro = document.querySelector(".js_intro");
+const introStart = document.querySelector("#introStart");
+
 // Corazones
-const hearts = document.querySelectorAll(".heart");
+const hearts = document.querySelectorAll(".js_heart");
 const heartStates = {
   full: "/images/Full-heart.png",
   half: "/images/Half-heart.png",
   empty: "/images/Empty-heart.png",
 };
+let heartInterval = null;
 
 // Murciélago
 const bat = document.querySelector(".js_bat");
 const batStates = {
-  normal: "images/Happy-bat.gif",
-  sad: "images/Sad-bat.gif",
-  hungry: "images/Hungry-bat.gif",
-  dead: "images/Dead-bat.gif",
+  normal: "/images/Happy-bat.gif",
+  sad: "/images/Sad-bat.gif",
+  hungry: "/images/Hungry-bat.gif",
+  dead: "/images/Dead-bat.gif",
 };
 
 // SECCIÓN DE DATOS
@@ -36,6 +41,8 @@ const soundEffect = new Audio("/sounds/heart-down.mp3");
 const bgMusic = new Audio("/sounds/background.ogg");
 bgMusic.loop = true;
 bgMusic.volume = 0.2;
+
+const gameStartSound = new Audio("/sounds/game-start.mp3");
 
 // SECCIÓN DE FUNCIONES
 
@@ -106,9 +113,6 @@ function degradeHeart() {
   }
 }
 
-// Intervalo que controla la pérdida de vida
-const heartInterval = setInterval(degradeHeart, intervalTime);
-
 function updateBatState() {
   if (emptyHeartsCount === 1) {
     bat.src = batStates.sad;
@@ -121,14 +125,48 @@ function updateBatState() {
 
 // SECCIÓN DE FUNCIONES DE EVENTOS
 
+startBtn.textContent = "⏸ Parar música";
+
 startBtn.addEventListener("click", () => {
   if (bgMusic.paused) {
+    // ▷ Si estaba parada → reanudar
     bgMusic.play();
-    startBtn.textContent = "⏸ Parar";
+    startBtn.textContent = "⏸ Parar música";
+    startBtn.classList.remove("is-paused");
   } else {
+    // ⏸ Si estaba sonando → pausar
     bgMusic.pause();
-    startBtn.textContent = "▶ Empezar";
+    startBtn.textContent = "▶ Empezar música";
+    startBtn.classList.add("is-paused");
   }
+});
+
+introStart.addEventListener("click", () => {
+  // Animación para cerrar la intro
+  intro.classList.add("intro--closing");
+
+  // Reproducir sonido de inicio
+  gameStartSound.volume = 0.5;
+  gameStartSound.play().catch(() => console.log("Autoplay bloqueado"));
+
+  // Reproducir bgMusic cuando termine el sonido de inicio
+  gameStartSound.addEventListener(
+    "ended",
+    () => {
+      bgMusic.play().catch(() => console.log("Autoplay bloqueado"));
+    },
+    { once: true }
+  );
+
+  // Empezar juego al cerrar la intro
+  intro.addEventListener(
+    "animationend",
+    () => {
+      intro.style.display = "none";
+      heartInterval = setInterval(degradeHeart, intervalTime);
+    },
+    { once: true }
+  );
 });
 
 // SECCIÓN DE ACCIONES AL CARGAR LA PÁGINA
