@@ -18,11 +18,8 @@
   <body>
     <section class="intro js_intro">
       <div class="intro__content">
-        <img
-          src="/images/Landing.png"
-          class="intro__image"
-          alt="Bat-magotchi"
-        />
+        <div class="intro__image"></div>
+
         <div class="intro__body">
           <h2 class="intro__title">¡Bienvenido a Bat-magotchi!</h2>
 
@@ -35,66 +32,37 @@
         </div>
       </div>
     </section>
+
     <div class="tamagotchi">
-      <button id="startAudio" class="tamagotchi__start-button">
-        ▶ Empezar
-      </button>
-      <!-- Pantalla principal -->
+      <button id="startAudio" class="tamagotchi__start-button">▶</button>
+
       <section class="tamagotchi__screen">
-        <!-- Vida: corazones -->
         <div class="tamagotchi__hearts">
-          <img
-            src="/images/Full-heart.png"
-            class="tamagotchi__heart js_heart"
-            alt="Corazón"
-          />
-          <img
-            src="/images/Full-heart.png"
-            class="tamagotchi__heart js_heart"
-            alt="Corazón"
-          />
-          <img
-            src="/images/Full-heart.png"
-            class="tamagotchi__heart js_heart"
-            alt="Corazón"
-          />
+          <div class="tamagotchi__heart js_heart"></div>
+          <div class="tamagotchi__heart js_heart"></div>
+          <div class="tamagotchi__heart js_heart"></div>
         </div>
 
-        <!-- Bat-magotchi -->
         <div class="tamagotchi__pet">
-          <img
-            class="tamagotchi__pet-image js_bat"
-            src="/images/Happy-bat.gif"
-            alt="Batmagotchi"
-          />
+          <div class="tamagotchi__pet-image js_bat"></div>
         </div>
 
-        <!-- Opciones de comida -->
         <div class="tamagotchi__foods">
-          <button class="tamagotchi__food-button js_foodBtn">
-            <img
-              class="tamagotchi__food-image"
-              src="/images/Garlic.png"
-              alt="Ajo"
-            />
+          <button class="tamagotchi__food-button js_foodBtn" data-food="ajo">
+            <div class="tamagotchi__food-image garlic"></div>
           </button>
-          <button class="tamagotchi__food-button js_foodBtn">
-            <img
-              class="tamagotchi__food-image"
-              src="/images/Melon.png"
-              alt="Melon"
-            />
+
+          <button class="tamagotchi__food-button js_foodBtn" data-food="melon">
+            <div class="tamagotchi__food-image melon"></div>
           </button>
-          <button class="tamagotchi__food-button js_foodBtn">
-            <img
-              class="tamagotchi__food-image"
-              src="/images/Moth.png"
-              alt="Polilla"
-            />
+
+          <button class="tamagotchi__food-button js_foodBtn" data-food="moth">
+            <div class="tamagotchi__food-image moth"></div>
           </button>
         </div>
       </section>
     </div>
+
     <script src="./js/main.js"></script>
   </body>
 </html>

@@ -1,114 +1,145 @@
 "use strict";
 
-// SECCIÓN DE QUERY-SELECTOR
-const startBtn = document.querySelector("#startAudio");
+// ======================= // SELECTORES // =======================
 
-// Intro
+const startBtn = document.querySelector("#startAudio");
 const intro = document.querySelector(".js_intro");
 const introStart = document.querySelector("#introStart");
 
 // Corazones
 const hearts = document.querySelectorAll(".js_heart");
-const heartStates = {
-  full: "/images/Full-heart.png",
-  half: "/images/Half-heart.png",
-  empty: "/images/Empty-heart.png",
-};
-let heartInterval = null;
 
 // Murciélago
 const bat = document.querySelector(".js_bat");
-const batStates = {
-  normal: "/images/Happy-bat.gif",
-  sad: "/images/Sad-bat.gif",
-  hungry: "/images/Hungry-bat.gif",
-  dead: "/images/Dead-bat.gif",
-};
 
 // Comida
 const foodBtns = document.querySelectorAll(".js_foodBtn");
 
-// SECCIÓN DE DATOS
-const intervalTime = 10000; //Tiempo entre degradaciones
+// ======================= // CONSTANTES Y CONFIGURACIÓN // =======================
 
-let currentHeartIndex = hearts.length - 1; //Empezamos desde el último corazón
-let currentState = 0; // 0 = lleno, 1 = medio, 2 = vacío
+// Estados gráficos de los corazones
+// 0: lleno | 1: medio | 2: vacío
+const heartStates = ["heart--full", "heart--half", "heart--empty"];
+
+// Estados gráficos del murciélago
+const batStates = {
+  normal: "bat--normal",
+  sad: "bat--sad",
+  hungry: "bat--hungry",
+  dead: "bat--dead",
+  eating: "bat--eating",
+  love: "bat--love",
+  no: "bat--no",
+};
+
+// Intervalo de pérdida de vida
+const intervalTime = 10000; // 10 segundos
+
+// ======================= // ESTADO DEL JUEGO // =======================
+
+// Índice del corazón actual (empezamos por el último)
+let currentHeartIndex = hearts.length - 1;
+
+// Estado actual del corazón
+// 0: lleno | 1: medio | 2: vacío
+let currentState = 0;
+
+// Número total de corazones completamente vacíos
 let emptyHeartsCount = 0;
 
-// =======================
-//       MÚSICA
-// =======================
+// Temporizador de pérdida de vida
+let heartInterval = null;
+
+// ======================= // AUDIO // =======================
 
 const soundEffect = new Audio("/sounds/heart-down.mp3");
-
 const bgMusic = new Audio("/sounds/background.ogg");
+const gameStartSound = new Audio("/sounds/game-start.mp3");
+
 bgMusic.loop = true;
 bgMusic.volume = 0.2;
 
-const gameStartSound = new Audio("/sounds/game-start.mp3");
+// ======================= // FUNCIONES DE UTILIDAD // =======================
 
-// SECCIÓN DE FUNCIONES
-
-// Efecto suave cuando un corazón cambia de estado
-function animateHeart(heartElement) {
-  heartElement.classList.add("heart--anim");
-
-  setTimeout(() => {
-    heartElement.classList.remove("heart--anim");
-  }, 300);
+// Cambia el estado visual de un corazón
+function setHeartState(heart, stateIndex) {
+  heart.classList.remove("heart--full", "heart--half", "heart--empty");
+  heart.classList.add(heartStates[stateIndex]);
 }
 
-// =======================
-//   LÓGICA DE VIDA
-// =======================
+// Cambia el estado visual del murciélago
+function setBat(state) {
+  bat.classList.remove(
+    "bat--normal",
+    "bat--sad",
+    "bat--hungry",
+    "bat--dead",
+    "bat--eating",
+    "bat--love",
+    "bat--no"
+  );
+  bat.classList.add(state);
+}
 
-function degradeHeart() {
-  // Si no quedan corazones por degradar...
-  if (currentHeartIndex < 0) {
-    clearInterval(heartInterval);
-    return;
+// Aplica una animación breve al corazón
+function animateHeart(heartElement) {
+  heartElement.classList.add("heart--anim");
+  setTimeout(() => heartElement.classList.remove("heart--anim"), 300);
+}
+
+// Detiene temporalmente la pérdida de vida (por ejemplo, mientras come)
+function pauseHearts() {
+  clearInterval(heartInterval);
+  heartInterval = null;
+}
+
+// Reanuda la pérdida de vida si no hay un temporizador activo
+function resumeHearts() {
+  if (!heartInterval) {
+    heartInterval = setInterval(degradeHeart, intervalTime);
   }
+}
 
-  const heart = hearts[currentHeartIndex]; //Referencia al corazón actual
+// Permite crear pausas usando async/await
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  // PASO 1 → lleno → medio
+// ======================= // LÓGICA DEL JUEGO // =======================
+
+// Reduce progresivamente la vida del murciélago
+function degradeHeart() {
+  if (currentHeartIndex < 0) return;
+
+  const heart = hearts[currentHeartIndex];
+
+  // Corazón lleno → medio
   if (currentState === 0) {
-    heart.src = heartStates.half;
+    setHeartState(heart, 1);
     animateHeart(heart);
-    soundEffect.currentTime = 0;
     soundEffect.play();
     currentState = 1;
 
-    // PASO 2 → medio → vacío
+    // Corazón medio → vacío
   } else if (currentState === 1) {
-    heart.src = heartStates.empty;
+    setHeartState(heart, 2);
     animateHeart(heart);
-    soundEffect.currentTime = 0;
     soundEffect.play();
     currentState = 2;
 
     emptyHeartsCount++;
 
-    // Si este corazón era el último que quedaba con vida:
+    // Si todos los corazones están vacíos, el murciélago muere
     if (emptyHeartsCount >= hearts.length) {
-      // Cambiar GIF del murciélago
-      bat.src = batStates.dead;
-
-      // Cambiar música
+      setBat(batStates.dead);
       bgMusic.pause();
       bgMusic.src = "/sounds/game-over.mp3";
-      bgMusic.currentTime = 0;
-      bgMusic.volume = 1.0;
-
-      // reproducir la nueva música
-      bgMusic.play().catch(() => {
-        console.log("El navegador bloqueó el autoplay de la música de muerte.");
-      });
+      bgMusic.play();
     } else {
-      updateBatState();
+      applyBatState();
     }
 
-    // PASO 3 → si ya está vacío → pasamos al corazón anterior
+    // Pasamos al siguiente corazón (el de la izquierda)
   } else {
     currentHeartIndex--;
     currentState = 0;
@@ -116,94 +147,75 @@ function degradeHeart() {
   }
 }
 
-function updateBatState() {
-  // Si está comiendo o en animación → no cambiar estado automático
-  if (bat.dataset.busy === "true") return;
-
-  if (emptyHeartsCount === 1) {
-    bat.src = batStates.sad;
-  } else if (emptyHeartsCount === 2) {
-    bat.src = batStates.hungry;
-  } else if (emptyHeartsCount >= hearts.length) {
-    bat.src = batStates.dead;
-  }
-}
-
-function getRealBatState() {
+// Calcula el estado emocional del murciélago según la vida restante
+function calculateBatState() {
   if (emptyHeartsCount >= hearts.length) return batStates.dead;
   if (emptyHeartsCount === 2) return batStates.hungry;
   if (emptyHeartsCount === 1) return batStates.sad;
   return batStates.normal;
 }
 
-function handleFood(foodType) {
+// Aplica el estado emocional si el murciélago no está ocupado
+function applyBatState() {
   if (bat.dataset.busy === "true") return;
-  bat.dataset.busy = "true";
-
-  let prevState = getRealBatState();
-
-  // ANIMACIÓN 1 → Comiendo
-  bat.src = "/images/Eating-bat.gif?rnd=" + Date.now();
-  const eatingDuration = 1780;
-
-  setTimeout(() => {
-    if (foodType === "ajo") {
-      bat.src = "/images/No-bat.gif?rnd=" + Date.now();
-
-      setTimeout(() => {
-        bat.src = getRealBatState();
-        bat.dataset.busy = "false";
-      }, 2000);
-    } else if (foodType === "melon") {
-      bat.src = getRealBatState();
-      bat.dataset.busy = "false";
-    } else if (foodType === "polilla") {
-      bat.src = "/images/Love-this-food.gif?rnd=" + Date.now();
-
-      setTimeout(() => {
-        bat.src = getRealBatState();
-        bat.dataset.busy = "false";
-      }, 2000);
-    }
-  }, eatingDuration);
+  setBat(calculateBatState());
 }
 
-// SECCIÓN DE FUNCIONES DE EVENTOS
+// Gestiona toda la secuencia cuando el jugador da comida
+async function handleFood(food) {
+  if (bat.dataset.busy === "true") return;
+  if (calculateBatState() === batStates.dead) return;
 
-startBtn.textContent = "⏸ Parar música";
+  bat.dataset.busy = "true";
+  pauseHearts();
+
+  // 1. Comer
+  setBat(batStates.eating);
+  await sleep(1700);
+
+  // 2. Reacción según la comida
+  if (food === "ajo") {
+    setBat(batStates.no);
+    await sleep(2000);
+  } else if (food === "melon") {
+    // Sin reacción secundaria
+  } else {
+    setBat(batStates.love);
+    await sleep(2000);
+  }
+
+  // 3. Volver al estado real
+  setBat(calculateBatState());
+  bat.dataset.busy = "false";
+  resumeHearts();
+}
+
+// ======================= // MANEJADORES DE EVENTOS // =======================
+
+// Botón de música
+startBtn.textContent = "⏸";
 
 startBtn.addEventListener("click", () => {
   if (bgMusic.paused) {
-    // ▷ Si estaba parada → reanudar
     bgMusic.play();
-    startBtn.textContent = "⏸ Parar música";
-    startBtn.classList.remove("is-paused");
+    startBtn.textContent = "⏸";
   } else {
-    // ⏸ Si estaba sonando → pausar
     bgMusic.pause();
-    startBtn.textContent = "▶ Empezar música";
-    startBtn.classList.add("is-paused");
+    startBtn.textContent = "▶";
   }
 });
 
+// Botón de inicio del juego
 introStart.addEventListener("click", () => {
-  // Animación para cerrar la intro
   intro.classList.add("intro--closing");
 
-  // Reproducir sonido de inicio
   gameStartSound.volume = 0.5;
-  gameStartSound.play().catch(() => console.log("Autoplay bloqueado"));
+  gameStartSound.play();
 
-  // Reproducir bgMusic cuando termine el sonido de inicio
-  gameStartSound.addEventListener(
-    "ended",
-    () => {
-      bgMusic.play().catch(() => console.log("Autoplay bloqueado"));
-    },
-    { once: true }
-  );
+  gameStartSound.addEventListener("ended", () => bgMusic.play(), {
+    once: true,
+  });
 
-  // Empezar juego al cerrar la intro
   intro.addEventListener(
     "animationend",
     () => {
@@ -214,14 +226,9 @@ introStart.addEventListener("click", () => {
   );
 });
 
+// Botones de comida
 foodBtns.forEach((button) => {
-  const foodImg = button.querySelector("img");
-  const foodType = foodImg.alt.toLowerCase();
-  console.log(foodType);
-
   button.addEventListener("click", () => {
-    handleFood(foodType);
+    handleFood(button.dataset.food);
   });
 });
-
-// SECCIÓN DE ACCIONES AL CARGAR LA PÁGINA

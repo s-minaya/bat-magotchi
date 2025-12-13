@@ -17,6 +17,7 @@ html {
   font-size: 62.5%;
 }
 
+
 body {
   font-family: $main-font;
   font-size: 1.6rem;
@@ -25,6 +26,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100dvh;
+  overflow: hidden;
 }
 
 .tamagotchi {
@@ -34,9 +36,12 @@ body {
   border: 6px solid #47457a;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
   position: relative;
+  max-width: 34rem;
+  width: 100%;
 
   &__start-button {
     font-family: $pixel-font;
+    font-size: 1.2rem;
     position: absolute;
     top: 20px;
     right: 20px;
@@ -58,13 +63,12 @@ body {
   &__screen {
     background: #b8b7e5;
     border: 5px solid $violet;
-    width: 280px;
+    width: 100%;
     padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    image-rendering: pixelated;
   }
 
   &__hearts {
@@ -73,25 +77,86 @@ body {
   }
 
   &__heart {
-    width: 28px;
-    transition: opacity 0.3s, transform 0.3s;
+      width: 28px;
+  height: 28px;
+  background-image: url("/images/Full-heart.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.3s, transform 0.3s;
   }
+  .heart--full {
+  background-image: url("/images/Full-heart.png");
+}
+
+.heart--half {
+  background-image: url("/images/Half-heart.png");
+}
+
+.heart--empty {
+  background-image: url("/images/Empty-heart.png");
+}
 
   &__pet {
-    width: 150px;
+    width: 15rem;
+    height: 15rem;
   }
 
   &__pet-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+     width: 100%;
+     height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("/images/Happy-bat.gif");
   }
+  .bat--normal {
+  background-image: url("/images/Happy-bat.gif");
+}
+.bat--sad {
+  background-image: url("/images/Sad-bat.gif");
+}
+
+.bat--hungry {
+  background-image: url("/images/Hungry-bat.gif");
+}
+
+.bat--dead {
+  background-image: url("/images/Dead-bat.gif");
+}
+
+.bat--eating {
+  background-image: url("/images/Eating-bat.gif");
+   animation: eat 1.69s linear;
+}
+
+.bat--love {
+  background-image: url("/images/Love-this-food.gif");
+}
+
+.bat--no {
+  background-image: url("/images/No-bat.gif");
+}
+
 
   &__food-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+      width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   }
+  .garlic {
+  background-image: url("/images/Garlic.png");
+}
+
+.melon {
+  background-image: url("/images/Melon.png");
+}
+
+.moth {
+  background-image: url("/images/Moth.png");
+}
 
   &__foods {
     display: flex;
@@ -126,6 +191,7 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 10;
+  transform: translateZ(0);
 
   animation: intro-slide-down 1.2s ease-out forwards;
 
@@ -135,21 +201,27 @@ body {
     color: $violet-light;
     border: 5px solid $violet;
     border-radius: 1.6rem;
-    padding: 1.6rem;
+    padding: 2rem;
     width: 90%;
-    max-width: 320px;
+    max-width: 32rem;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.6rem;
+    gap: 1.8rem;
 
     text-align: center;
   }
 
   &__image {
     width: 100%;
-    max-width: 280px;
+  max-width: 28rem;
+    aspect-ratio: 16 / 9; 
+  background-image: url("/images/Landing.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: block;
   }
 
   &__title {
@@ -176,15 +248,21 @@ body {
 
 @media (min-width: 768px) {
   .tamagotchi {
-    padding: 4rem;
+    padding: 3rem;
+    border-width: 0.6rem;
+    max-width: 40rem;
 
     &__screen {
-      width: 360px;
-      padding: 2.6rem;
+      max-width: 40rem;
     }
 
     &__pet {
-      width: 190px;
+      width: 18rem;
+      height: 18rem;
+    }
+    &__heart {
+      width: 3.4rem;
+      height: 3.4rem;
     }
 
     &__foods {
@@ -192,9 +270,13 @@ body {
     }
 
     &__food-button {
-      width: 80px;
-      height: 80px;
+      width: 7rem;
+      height: 7rem;
     }
+    &__start-button {
+       font-size: 1.4rem;
+  padding: 0.8rem 1.2rem;
+     }
   }
 
   .intro {
@@ -202,53 +284,120 @@ body {
 
     &__content {
       margin-top: 4rem;
+      padding: 3rem 4rem;
       display: flex;
       flex-direction: row;
       align-items: center;
+      justify-content: flex-start;
       text-align: left;
-      max-width: 700px;
-      gap: 2.4rem;
+      max-width: 80rem;
+      gap: 2rem;
     }
 
     &__image {
       flex-shrink: 0;
-      width: 40%;
-      max-width: 320px;
+      width: 45%;
+      max-width: 45rem;
+      min-width: 24rem;
+      min-height: 24rem; 
+        aspect-ratio: 16 / 9; 
+        flex-basis: 50%; 
+      display: block;
+    }
+       &__title {
+      font-size: 3.6rem;
+    }
+        &__text {
+          flex:1;
+      font-size: 1.8rem;
     }
   }
 }
 
 @media (min-width: 1024px) {
   .tamagotchi {
+    padding: 3rem;
+    max-width: 46rem;
     &__screen {
-      width: 420px;
-      padding: 3rem;
+      max-width: 46rem;
     }
 
     &__pet {
-      width: 220px;
+      width: 20rem;
+      height: 20rem;
+    }
+      &__heart {
+      width: 4rem;
+      height: 4rem;
     }
 
     &__food-button {
-      width: 96px;
-      height: 96px;
+      width: 8rem;
+      height: 8rem;
+    }
+     &__start-button {
+       font-size: 1.6rem;
+  padding: 1rem 1.4rem;
+     }
+  }
+    .intro {
+    &__content {
+      max-width: 90rem;
+      padding: 4rem 6rem;
+    }
+
+    &__image {
+      width: 50%;
+      max-width:48rem;
+      height: 32rem;
     }
   }
 }
 
 @media (min-width: 1440px) {
   .tamagotchi {
+    padding: 3rem;
+    max-width: 55rem;
     &__screen {
-      width: 520px;
+      max-width: 55rem;
     }
 
     &__pet {
-      width: 290px;
+      width: 22rem;
+      height: 22rem;
+    }
+      &__heart {
+      width: 4.8rem;
+      height: 4.8rem;
     }
 
     &__food-button {
-      width: 112px;
-      height: 112px;
+      width: 10rem;
+      height: 10rem;
+    }
+     &__start-button {
+       font-size: 1.8rem;
+  padding: 1.2rem 1.6rem;
+     }
+  }
+    .intro {
+    &__content {
+      max-width: 110rem;
+      padding: 5rem 8rem;
+    }
+     &__image {
+      width: 55%;
+  max-width: 56rem;
+  height: 36rem;
+    }
+
+    &__title {
+      font-size: 4.2rem;
+    }
+
+    &__text {
+      font-size: 2rem;
+      max-width: 50ch;
     }
   }
 }
@@ -256,7 +405,7 @@ body {
 // Animaciones
 @keyframes intro-slide-down {
   from {
-    transform: translateY(-100%);
+    transform: translateY(-100dvh);
   }
 
   to {
@@ -270,8 +419,21 @@ body {
   }
 
   to {
-    transform: translateY(-100%);
+    transform: translateY(-100dvh);
   }
+}
+@keyframes dummy {
+  from { opacity: 1; }
+  to   { opacity: 1; }
+}
+@keyframes eat {
+  from { opacity: 1; }
+  to   { opacity: 1; }
+}
+
+.bat--love,
+.bat--no {
+  animation: dummy 2s linear;
 }
 
 /*Animación para cuando un corazón cambia de estado */
