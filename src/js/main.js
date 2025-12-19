@@ -3,6 +3,7 @@
 // ======================= // SELECTORES // =======================
 
 const startBtn = document.querySelector("#startAudio");
+const pauseBtn = document.querySelector("#pauseGame");
 const intro = document.querySelector(".js_intro");
 const introStart = document.querySelector("#introStart");
 
@@ -30,6 +31,7 @@ const batStates = {
   eating: "bat--eating",
   love: "bat--love",
   no: "bat--no",
+  paused: "bat--paused",
 };
 
 // Intervalo de pérdida de vida
@@ -52,6 +54,8 @@ let emptyHeartsCount = 0;
 // Temporizador de pérdida de vida
 let heartInterval = null;
 
+// Pausar el juego
+let isPaused = false;
 // ======================= // AUDIO // =======================
 
 const soundEffect = new Audio("/sounds/heart-down.mp3");
@@ -78,7 +82,8 @@ function setBat(state) {
     "bat--dead",
     "bat--eating",
     "bat--love",
-    "bat--no"
+    "bat--no",
+    "bat--paused"
   );
   bat.classList.add(state);
 }
@@ -107,10 +112,39 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Pausar/reanudar juego
+function pauseGame() {
+  if (isPaused) return;
+
+  isPaused = true;
+  pauseHearts();
+  setBat(batStates.paused);
+  toggleFoodButtons(true);
+}
+// Desactivar botones cuando pausado
+function toggleFoodButtons(disabled) {
+  foodBtns.forEach((btn) => {
+    btn.style.pointerEvents = disabled ? "none" : "auto";
+    btn.style.opacity = disabled ? "0.4" : "1";
+  });
+}
+
+function resumeGame() {
+  if (!isPaused) return;
+
+  isPaused = false;
+  setBat(calculateBatState());
+  resumeHearts();
+  toggleFoodButtons(false);
+  pauseHearts();
+  resumeHearts();
+}
+
 // ======================= // LÓGICA DEL JUEGO // =======================
 
 // Reduce progresivamente la vida del murciélago
 function degradeHeart() {
+  if (isPaused) return;
   if (currentHeartIndex < 0) return;
 
   const heart = hearts[currentHeartIndex];
@@ -210,6 +244,7 @@ function applyBatState() {
 
 // Gestiona toda la secuencia cuando el jugador da comida
 async function handleFood(food) {
+  if (isPaused) return;
   if (bat.dataset.busy === "true") return;
   if (calculateBatState() === batStates.dead) return;
   // No se puede dar comida si los corazones están llenos
@@ -261,15 +296,15 @@ async function handleFood(food) {
 // ======================= // MANEJADORES DE EVENTOS // =======================
 
 // Botón de música
-startBtn.textContent = "⏸";
+startBtn.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
 
 startBtn.addEventListener("click", () => {
   if (bgMusic.paused) {
     bgMusic.play();
-    startBtn.textContent = "⏸";
+    startBtn.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
   } else {
     bgMusic.pause();
-    startBtn.textContent = "▶";
+    startBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
   }
 });
 
@@ -292,6 +327,20 @@ introStart.addEventListener("click", () => {
     },
     { once: true }
   );
+});
+
+// Botón de pausar juego
+
+pauseBtn.textContent = "⏸";
+
+pauseBtn.addEventListener("click", () => {
+  if (isPaused) {
+    resumeGame();
+    pauseBtn.textContent = "⏸";
+  } else {
+    pauseGame();
+    pauseBtn.textContent = "▶";
+  }
 });
 
 // Botones de comida

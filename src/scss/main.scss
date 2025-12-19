@@ -17,7 +17,6 @@ html {
   font-size: 62.5%;
 }
 
-
 body {
   font-family: $main-font;
   font-size: 1.6rem;
@@ -59,6 +58,26 @@ body {
       box-shadow: 0 0 0 4px $violet-dark, 0 2px 0 4px #1b1934;
     }
   }
+  &__pause-button {
+  font-family: $pixel-font;
+  font-size: 1.2rem;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #524d8a;
+  color: #fff;
+  border: 0;
+  padding: 1rem 1.4rem;
+  cursor: pointer;
+  image-rendering: pixelated;
+
+  box-shadow: 0 0 0 4px $violet-dark, 0 4px 0 4px #1b1934;
+
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 4px $violet-dark, 0 2px 0 4px #1b1934;
+  }
+}
 
   &__screen {
     background: #b8b7e5;
@@ -77,25 +96,25 @@ body {
   }
 
   &__heart {
-      width: 28px;
-  height: 28px;
-  background-image: url("/images/Full-heart.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: opacity 0.3s, transform 0.3s;
+    width: 28px;
+    height: 28px;
+    background-image: url("/images/Full-heart.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.3s, transform 0.3s;
   }
   .heart--full {
-  background-image: url("/images/Full-heart.png");
-}
+    background-image: url("/images/Full-heart.png");
+  }
 
-.heart--half {
-  background-image: url("/images/Half-heart.png");
-}
+  .heart--half {
+    background-image: url("/images/Half-heart.png");
+  }
 
-.heart--empty {
-  background-image: url("/images/Empty-heart.png");
-}
+  .heart--empty {
+    background-image: url("/images/Empty-heart.png");
+  }
 
   &__pet {
     width: 15rem;
@@ -103,60 +122,62 @@ body {
   }
 
   &__pet-image {
-     width: 100%;
-     height: 100%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url("/images/Happy-bat.gif");
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("/images/Happy-bat.gif");
   }
   .bat--normal {
-  background-image: url("/images/Happy-bat.gif");
-}
-.bat--sad {
-  background-image: url("/images/Sad-bat.gif");
-}
+    background-image: url("/images/Happy-bat.gif");
+  }
+  .bat--sad {
+    background-image: url("/images/Sad-bat.gif");
+  }
 
-.bat--hungry {
-  background-image: url("/images/Hungry-bat.gif");
-}
+  .bat--hungry {
+    background-image: url("/images/Hungry-bat.gif");
+  }
 
-.bat--dead {
-  background-image: url("/images/Dead-bat.gif");
-}
+  .bat--dead {
+    background-image: url("/images/Dead-bat.gif");
+  }
 
-.bat--eating {
-  background-image: url("/images/Eating-bat.gif");
-   animation: eat 1.69s linear;
-}
+  .bat--eating {
+    background-image: url("/images/Eating-bat.gif");
+    animation: eat 1.69s linear;
+  }
 
-.bat--love {
-  background-image: url("/images/Love-this-food.gif");
-}
+  .bat--love {
+    background-image: url("/images/Love-this-food.gif");
+  }
 
-.bat--no {
-  background-image: url("/images/No-bat.gif");
-}
-
+  .bat--no {
+    background-image: url("/images/No-bat.gif");
+  }
+  .bat--paused {
+    background-image: url("/images/Sleeping-bat.gif");
+  }
 
   &__food-image {
-      width: 100%;
-  height: 100%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
   .garlic {
-  background-image: url("/images/Garlic.png");
-}
+    background-image: url("/images/Garlic.png");
+  }
 
-.melon {
-  background-image: url("/images/Melon.png");
-}
+  .melon {
+    background-image: url("/images/Melon.png");
+  }
 
-.moth {
-  background-image: url("/images/Moth.png");
-}
+  .moth {
+    background-image: url("/images/Moth.png");
+  }
 
   &__foods {
     display: flex;
@@ -215,13 +236,13 @@ body {
 
   &__image {
     width: 100%;
-  max-width: 28rem;
-    aspect-ratio: 16 / 9; 
-  background-image: url("/images/Landing.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: block;
+    max-width: 28rem;
+    aspect-ratio: 16 / 9;
+    background-image: url("/images/Landing.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
   }
 
   &__title {
@@ -274,9 +295,13 @@ body {
       height: 7rem;
     }
     &__start-button {
-       font-size: 1.4rem;
-  padding: 0.8rem 1.2rem;
-     }
+      font-size: 1.4rem;
+      padding: 0.8rem 1.2rem;
+    }
+     &__pause-button {
+      font-size: 1.4rem;
+      padding: 0.8rem 1.2rem;
+    }
   }
 
   .intro {
@@ -299,16 +324,16 @@ body {
       width: 45%;
       max-width: 45rem;
       min-width: 24rem;
-      min-height: 24rem; 
-        aspect-ratio: 16 / 9; 
-        flex-basis: 50%; 
+      min-height: 24rem;
+      aspect-ratio: 16 / 9;
+      flex-basis: 50%;
       display: block;
     }
-       &__title {
+    &__title {
       font-size: 3.6rem;
     }
-        &__text {
-          flex:1;
+    &__text {
+      flex: 1;
       font-size: 1.8rem;
     }
   }
@@ -326,7 +351,7 @@ body {
       width: 20rem;
       height: 20rem;
     }
-      &__heart {
+    &__heart {
       width: 4rem;
       height: 4rem;
     }
@@ -335,12 +360,16 @@ body {
       width: 8rem;
       height: 8rem;
     }
-     &__start-button {
-       font-size: 1.6rem;
-  padding: 1rem 1.4rem;
-     }
+    &__start-button {
+      font-size: 1.6rem;
+      padding: 1rem 1.4rem;
+    }
+     &__pause-button {
+      font-size: 1.6rem;
+      padding: 1rem 1.4rem;
+    }
   }
-    .intro {
+  .intro {
     &__content {
       max-width: 90rem;
       padding: 4rem 6rem;
@@ -348,7 +377,7 @@ body {
 
     &__image {
       width: 50%;
-      max-width:48rem;
+      max-width: 48rem;
       height: 32rem;
     }
   }
@@ -366,7 +395,7 @@ body {
       width: 22rem;
       height: 22rem;
     }
-      &__heart {
+    &__heart {
       width: 4.8rem;
       height: 4.8rem;
     }
@@ -375,20 +404,24 @@ body {
       width: 10rem;
       height: 10rem;
     }
-     &__start-button {
-       font-size: 1.8rem;
-  padding: 1.2rem 1.6rem;
-     }
+    &__start-button {
+      font-size: 1.8rem;
+      padding: 1.2rem 1.6rem;
+    }
+     &__pause-button {
+      font-size: 1.8rem;
+      padding: 1.2rem 1.6rem;
+    }
   }
-    .intro {
+  .intro {
     &__content {
       max-width: 110rem;
       padding: 5rem 8rem;
     }
-     &__image {
+    &__image {
       width: 55%;
-  max-width: 56rem;
-  height: 36rem;
+      max-width: 56rem;
+      height: 36rem;
     }
 
     &__title {
@@ -423,12 +456,20 @@ body {
   }
 }
 @keyframes dummy {
-  from { opacity: 1; }
-  to   { opacity: 1; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes eat {
-  from { opacity: 1; }
-  to   { opacity: 1; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .bat--love,
