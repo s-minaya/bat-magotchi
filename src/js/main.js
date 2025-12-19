@@ -146,6 +146,44 @@ function degradeHeart() {
     degradeHeart();
   }
 }
+function loseOneHeart() {
+  // Forzamos una degradación inmediata
+  degradeHeart();
+}
+
+function gainOneHeart() {
+  // Si ya está todo lleno, no hacemos nada
+  if (emptyHeartsCount === 0 && currentState === 0) return;
+
+  // Si estamos en un corazón vacío
+  if (currentState === 2) {
+    setHeartState(hearts[currentHeartIndex], 1);
+    currentState = 1;
+    emptyHeartsCount--;
+  }
+  // Si estamos en medio
+  else if (currentState === 1) {
+    setHeartState(hearts[currentHeartIndex], 0);
+    currentState = 0;
+  }
+  // Si el corazón actual está lleno, pasamos al siguiente
+  else {
+    currentHeartIndex++;
+    currentState = 2;
+    gainOneHeart();
+    return;
+  }
+
+  applyBatState();
+}
+
+function restoreAllHearts() {
+  hearts.forEach((heart) => setHeartState(heart, 0));
+  currentHeartIndex = hearts.length - 1;
+  currentState = 0;
+  emptyHeartsCount = 0;
+  applyBatState();
+}
 
 // Calcula el estado emocional del murciélago según la vida restante
 function calculateBatState() {
@@ -153,6 +191,10 @@ function calculateBatState() {
   if (emptyHeartsCount === 2) return batStates.hungry;
   if (emptyHeartsCount === 1) return batStates.sad;
   return batStates.normal;
+}
+function willGarlicKill() {
+  // Último corazón y está en medio (va a pasar a vacío)
+  return emptyHeartsCount === hearts.length - 1 && currentState === 1;
 }
 
 // Aplica el estado emocional si el murciélago no está ocupado
@@ -168,6 +210,12 @@ async function handleFood(food) {
 
   bat.dataset.busy = "true";
   pauseHearts();
+  // Caso especial: ajo que mata
+  if (food === "ajo" && willGarlicKill()) {
+    loseOneHeart(); // provoca la muerte
+    bat.dataset.busy = "false";
+    return; // SALIMOS sin animaciones
+  }
 
   // 1. Comer
   setBat(batStates.eating);
@@ -175,11 +223,13 @@ async function handleFood(food) {
 
   // 2. Reacción según la comida
   if (food === "ajo") {
+    loseOneHeart();
     setBat(batStates.no);
     await sleep(2000);
   } else if (food === "melon") {
-    // Sin reacción secundaria
+    gainOneHeart();
   } else {
+    restoreAllHearts();
     setBat(batStates.love);
     await sleep(2000);
   }
