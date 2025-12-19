@@ -34,6 +34,8 @@ const batStates = {
 
 // Intervalo de pérdida de vida
 const intervalTime = 10000; // 10 segundos
+const EAT_DURATION = 2100;
+const REACTION_DURATION = 1000;
 
 // ======================= // ESTADO DEL JUEGO // =======================
 
@@ -184,6 +186,9 @@ function restoreAllHearts() {
   emptyHeartsCount = 0;
   applyBatState();
 }
+function isFullHealth() {
+  return emptyHeartsCount === 0 && currentState === 0;
+}
 
 // Calcula el estado emocional del murciélago según la vida restante
 function calculateBatState() {
@@ -207,6 +212,19 @@ function applyBatState() {
 async function handleFood(food) {
   if (bat.dataset.busy === "true") return;
   if (calculateBatState() === batStates.dead) return;
+  // No se puede dar comida si los corazones están llenos
+  if (isFullHealth() && (food === "melon" || food === "moth")) {
+    bat.dataset.busy = "true";
+    pauseHearts();
+
+    setBat(batStates.no);
+    await sleep(REACTION_DURATION);
+
+    setBat(calculateBatState());
+    bat.dataset.busy = "false";
+    resumeHearts();
+    return;
+  }
 
   bat.dataset.busy = "true";
   pauseHearts();
@@ -219,19 +237,19 @@ async function handleFood(food) {
 
   // 1. Comer
   setBat(batStates.eating);
-  await sleep(1700);
+  await sleep(EAT_DURATION);
 
   // 2. Reacción según la comida
   if (food === "ajo") {
     loseOneHeart();
     setBat(batStates.no);
-    await sleep(2000);
+    await sleep(REACTION_DURATION);
   } else if (food === "melon") {
     gainOneHeart();
   } else {
     restoreAllHearts();
     setBat(batStates.love);
-    await sleep(2000);
+    await sleep(REACTION_DURATION);
   }
 
   // 3. Volver al estado real
