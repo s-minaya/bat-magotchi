@@ -3,7 +3,6 @@
 // ======================= // SELECTORES // =======================
 
 const startBtn = document.querySelector("#startAudio");
-const pauseBtn = document.querySelector("#pauseGame");
 const intro = document.querySelector(".js_intro");
 const introStart = document.querySelector("#introStart");
 
@@ -15,6 +14,17 @@ const bat = document.querySelector(".js_bat");
 
 // Comida
 const foodBtns = document.querySelectorAll(".js_foodBtn");
+const foodsContainer = document.querySelector(".tamagotchi__foods");
+
+// Controles Game Boy
+const dpadUp = document.querySelector(".js_dpad-up");
+const dpadDown = document.querySelector(".js_dpad-down");
+const dpadLeft = document.querySelector(".js_dpad-left");
+const dpadRight = document.querySelector(".js_dpad-right");
+const btnA = document.querySelector(".js_btn-a");
+const btnB = document.querySelector(".js_btn-b");
+const selectBtn = document.querySelector(".js_select-btn");
+const resetBtn = document.querySelector(".js_reset-btn");
 
 // ======================= // CONSTANTES Y CONFIGURACIÓN // =======================
 
@@ -56,6 +66,11 @@ let heartInterval = null;
 
 // Pausar el juego
 let isPaused = false;
+
+// Estado del menú de comida
+let foodMenuVisible = false;
+let selectedFoodIndex = 0;
+
 // ======================= // AUDIO // =======================
 
 const soundEffect = new Audio("/sounds/heart-down.mp3");
@@ -83,7 +98,7 @@ function setBat(state) {
     "bat--eating",
     "bat--love",
     "bat--no",
-    "bat--paused"
+    "bat--paused",
   );
   bat.classList.add(state);
 }
@@ -112,15 +127,23 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Verificar si el tamagotchi está muerto
+function isDead() {
+  return emptyHeartsCount >= hearts.length;
+}
+
 // Pausar/reanudar juego
 function pauseGame() {
-  if (isPaused) return;
+  // No se puede pausar si está muerto
+  if (isPaused || isDead()) return;
 
   isPaused = true;
   pauseHearts();
   setBat(batStates.paused);
   toggleFoodButtons(true);
+  hideFoodMenu();
 }
+
 // Desactivar botones cuando pausado
 function toggleFoodButtons(disabled) {
   foodBtns.forEach((btn) => {
@@ -130,7 +153,8 @@ function toggleFoodButtons(disabled) {
 }
 
 function resumeGame() {
-  if (!isPaused) return;
+  // No se puede reanudar si está muerto
+  if (!isPaused || isDead()) return;
 
   isPaused = false;
   setBat(calculateBatState());
@@ -138,6 +162,85 @@ function resumeGame() {
   toggleFoodButtons(false);
   pauseHearts();
   resumeHearts();
+}
+
+// Reiniciar el juego completamente
+function resetGame() {
+  // Detener todo
+  pauseHearts();
+  hideFoodMenu();
+
+  // Resetear estado del juego
+  currentHeartIndex = hearts.length - 1;
+  currentState = 0;
+  emptyHeartsCount = 0;
+  isPaused = false;
+
+  // Restaurar corazones visualmente
+  hearts.forEach((heart) => setHeartState(heart, 0));
+
+  // Restaurar murciélago
+  setBat(batStates.normal);
+  bat.dataset.busy = "false";
+
+  // Reiniciar música
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+  bgMusic.src = "/sounds/background.ogg";
+  if (!bgMusic.paused || startBtn.innerHTML.includes("volume-xmark")) {
+    bgMusic.play();
+  }
+
+  // Reiniciar temporizador
+  resumeHearts();
+}
+
+// ======================= // FUNCIONES DE MENÚ DE COMIDA // =======================
+
+function showFoodMenu() {
+  if (foodMenuVisible || isPaused || isDead()) return;
+  foodMenuVisible = true;
+  foodsContainer.classList.add("tamagotchi__foods--visible");
+  selectedFoodIndex = 0;
+  updateFoodSelection();
+}
+
+function hideFoodMenu() {
+  foodMenuVisible = false;
+  foodsContainer.classList.remove("tamagotchi__foods--visible");
+  foodBtns.forEach((btn) =>
+    btn.classList.remove("tamagotchi__food-button--selected"),
+  );
+}
+
+function updateFoodSelection() {
+  foodBtns.forEach((btn, index) => {
+    if (index === selectedFoodIndex) {
+      btn.classList.add("tamagotchi__food-button--selected");
+    } else {
+      btn.classList.remove("tamagotchi__food-button--selected");
+    }
+  });
+}
+
+function moveFoodSelectionLeft() {
+  if (!foodMenuVisible) return;
+  selectedFoodIndex =
+    (selectedFoodIndex - 1 + foodBtns.length) % foodBtns.length;
+  updateFoodSelection();
+}
+
+function moveFoodSelectionRight() {
+  if (!foodMenuVisible) return;
+  selectedFoodIndex = (selectedFoodIndex + 1) % foodBtns.length;
+  updateFoodSelection();
+}
+
+function confirmFoodSelection() {
+  if (!foodMenuVisible) return;
+  const selectedFood = foodBtns[selectedFoodIndex].dataset.food;
+  handleFood(selectedFood);
+  hideFoodMenu();
 }
 
 // ======================= // LÓGICA DEL JUEGO // =======================
@@ -182,6 +285,7 @@ function degradeHeart() {
     degradeHeart();
   }
 }
+
 function loseOneHeart() {
   // Forzamos una degradación inmediata
   degradeHeart();
@@ -220,6 +324,7 @@ function restoreAllHearts() {
   emptyHeartsCount = 0;
   applyBatState();
 }
+
 function isFullHealth() {
   return emptyHeartsCount === 0 && currentState === 0;
 }
@@ -231,6 +336,7 @@ function calculateBatState() {
   if (emptyHeartsCount === 1) return batStates.sad;
   return batStates.normal;
 }
+
 function willGarlicKill() {
   // Último corazón y está en medio (va a pasar a vacío)
   return emptyHeartsCount === hearts.length - 1 && currentState === 1;
@@ -247,6 +353,7 @@ async function handleFood(food) {
   if (isPaused) return;
   if (bat.dataset.busy === "true") return;
   if (calculateBatState() === batStates.dead) return;
+
   // No se puede dar comida si los corazones están llenos
   if (isFullHealth() && (food === "melon" || food === "moth")) {
     bat.dataset.busy = "true";
@@ -263,6 +370,7 @@ async function handleFood(food) {
 
   bat.dataset.busy = "true";
   pauseHearts();
+
   // Caso especial: ajo que mata
   if (food === "ajo" && willGarlicKill()) {
     loseOneHeart(); // provoca la muerte
@@ -323,29 +431,136 @@ introStart.addEventListener("click", () => {
     "animationend",
     () => {
       intro.style.display = "none";
+      setBat(batStates.normal);
       heartInterval = setInterval(degradeHeart, intervalTime);
     },
-    { once: true }
+    { once: true },
   );
 });
 
-// Botón de pausar juego
+// Botones de comida (click directo aún funciona)
+foodBtns.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (!foodMenuVisible) return;
+    handleFood(button.dataset.food);
+    hideFoodMenu();
+  });
+});
 
-pauseBtn.textContent = "⏸";
+// ======================= // CONTROLES GAME BOY // =======================
 
-pauseBtn.addEventListener("click", () => {
+// D-Pad Up - Mostrar menú de comida
+dpadUp.addEventListener("click", () => {
+  showFoodMenu();
+});
+
+// D-Pad Down - Ocultar menú de comida
+dpadDown.addEventListener("click", () => {
+  hideFoodMenu();
+});
+
+// D-Pad Left - Mover selección a la izquierda
+dpadLeft.addEventListener("click", () => {
+  moveFoodSelectionLeft();
+});
+
+// D-Pad Right - Mover selección a la derecha
+dpadRight.addEventListener("click", () => {
+  moveFoodSelectionRight();
+});
+
+// Botón A - Confirmar selección
+btnA.addEventListener("click", () => {
+  confirmFoodSelection();
+});
+
+// Botón B - Cancelar/Ocultar menú
+btnB.addEventListener("click", () => {
+  hideFoodMenu();
+});
+
+// Botón SELECT - Toggle pausa (solo si no está muerto)
+selectBtn.addEventListener("click", () => {
+  // Verificar que no está muerto antes de pausar/reanudar
+  if (isDead()) return;
+
   if (isPaused) {
     resumeGame();
-    pauseBtn.textContent = "⏸";
   } else {
     pauseGame();
-    pauseBtn.textContent = "▶";
   }
 });
 
-// Botones de comida
-foodBtns.forEach((button) => {
-  button.addEventListener("click", () => {
-    handleFood(button.dataset.food);
-  });
+// Botón RESET - Reiniciar el juego
+resetBtn.addEventListener("click", () => {
+  if (
+    confirm(
+      "¿Estás seguro de que quieres reiniciar el juego? Se perderá todo el progreso.",
+    )
+  ) {
+    resetGame();
+  }
+});
+
+// ======================= // CONTROLES DE TECLADO // =======================
+
+document.addEventListener("keydown", (e) => {
+  switch (e.key) {
+    case "ArrowUp":
+    case "w":
+    case "W":
+      e.preventDefault();
+      showFoodMenu();
+      break;
+    case "ArrowDown":
+    case "s":
+    case "S":
+      e.preventDefault();
+      hideFoodMenu();
+      break;
+    case "ArrowLeft":
+    case "a":
+    case "A":
+      e.preventDefault();
+      moveFoodSelectionLeft();
+      break;
+    case "ArrowRight":
+    case "d":
+    case "D":
+      e.preventDefault();
+      moveFoodSelectionRight();
+      break;
+    case "Enter":
+    case " ":
+      e.preventDefault();
+      confirmFoodSelection();
+      break;
+    case "Escape":
+    case "Backspace":
+      e.preventDefault();
+      hideFoodMenu();
+      break;
+    case "p":
+    case "P":
+      e.preventDefault();
+      // Solo permitir pausar/reanudar si no está muerto
+      if (isDead()) return;
+      if (isPaused) {
+        resumeGame();
+      } else {
+        pauseGame();
+      }
+      break;
+    case "r":
+    case "R":
+      e.preventDefault();
+      if (
+        confirm(
+          "¿Estás seguro de que quieres reiniciar el juego? Se perderá todo el progreso.",
+        )
+      ) {
+        resetGame();
+      }
+      break;
+  }
 });
