@@ -6,6 +6,10 @@ const startBtn = document.querySelector("#startAudio");
 const intro = document.querySelector(".js_intro");
 const introStart = document.querySelector("#introStart");
 
+// Game Over
+const gameoverScreen = document.querySelector(".js_gameover");
+const gameoverRestart = document.querySelector("#gameoverRestart");
+
 // Corazones
 const hearts = document.querySelectorAll(".js_heart");
 
@@ -132,6 +136,11 @@ function isDead() {
   return emptyHeartsCount >= hearts.length;
 }
 
+// Mostrar pantalla de Game Over
+function showGameOver() {
+  gameoverScreen.classList.add("gameover--visible");
+}
+
 // Pausar/reanudar juego
 function pauseGame() {
   // No se puede pausar si está muerto
@@ -169,6 +178,9 @@ function resetGame() {
   // Detener todo
   pauseHearts();
   hideFoodMenu();
+
+  // Ocultar pantalla de Game Over si está visible
+  gameoverScreen.classList.remove("gameover--visible");
 
   // Resetear estado del juego
   currentHeartIndex = hearts.length - 1;
@@ -274,6 +286,11 @@ function degradeHeart() {
       bgMusic.pause();
       bgMusic.src = "/sounds/game-over.mp3";
       bgMusic.play();
+
+      // Mostrar pantalla de Game Over después de un breve delay
+      setTimeout(() => {
+        showGameOver();
+      }, 1500);
     } else {
       applyBatState();
     }
@@ -436,6 +453,11 @@ introStart.addEventListener("click", () => {
     },
     { once: true },
   );
+});
+
+// Botón de reinicio desde Game Over
+gameoverRestart.addEventListener("click", () => {
+  resetGame();
 });
 
 // Botones de comida (click directo aún funciona)
