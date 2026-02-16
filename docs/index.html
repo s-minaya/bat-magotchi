@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bat-magotchi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script
+      src="https://kit.fontawesome.com/66349fc88a.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Pixelify+Sans:wght@400..700&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="./images/fav-icon.png" />
+    <link rel="stylesheet" crossorigin href="./assets/index-Cuxux88C.css">
+  </head>
+  <body>
+    <!-- INTRO SCREEN -->
+    <section class="intro js_intro">
+      <div class="intro__content">
+        <div class="intro__image"></div>
+        <div class="intro__body">
+          <h2 class="intro__title">¡Bienvenido a Bat-magotchi!</h2>
+          <p class="intro__text">
+            No dejes que tu bat-magotchi se muera. Si los corazones se vacían…
+            ¡Game over! Puedes evitarlo dándole de comer.
+          </p>
+          <button id="introStart" class="intro__button">Empezar juego</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME OVER SCREEN -->
+    <section class="gameover js_gameover">
+      <div class="gameover__content">
+        <h2 class="gameover__title">GAME OVER</h2>
+        <p class="gameover__text">
+          Tu Bat-magotchi ha muerto... ¿Quieres intentarlo de nuevo?
+        </p>
+        <button id="gameoverRestart" class="gameover__button">
+          Reiniciar juego
+        </button>
+      </div>
+    </section>
+
+    <!-- CONSOLE -->
+    <div class="tamagotchi">
+      <!-- LED Indicator -->
+      <div class="tamagotchi__led"></div>
+
+      <!-- Audio Control -->
+      <button id="startAudio" class="tamagotchi__audio-control">
+        <i class="fa-solid fa-volume-high"></i>
+      </button>
+
+      <!-- Marco gris oscuro -->
+      <div class="tamagotchi__frame">
+        <!-- LCD Screen -->
+        <section class="tamagotchi__screen">
+          <!-- Scanlines overlay -->
+          <div class="tamagotchi__screen-scanlines"></div>
+
+          <!-- Hearts -->
+          <div class="tamagotchi__hearts">
+            <div class="tamagotchi__heart js_heart"></div>
+            <div class="tamagotchi__heart js_heart"></div>
+            <div class="tamagotchi__heart js_heart"></div>
+          </div>
+
+          <!-- Pet -->
+          <div class="tamagotchi__pet">
+            <div class="tamagotchi__pet-image js_bat"></div>
+          </div>
+
+          <!-- Food Buttons -->
+          <div class="tamagotchi__foods">
+            <button class="tamagotchi__food-button js_foodBtn" data-food="ajo">
+              <div class="tamagotchi__food-image garlic"></div>
+            </button>
+            <button
+              class="tamagotchi__food-button js_foodBtn"
+              data-food="melon"
+            >
+              <div class="tamagotchi__food-image melon"></div>
+            </button>
+            <button class="tamagotchi__food-button js_foodBtn" data-food="moth">
+              <div class="tamagotchi__food-image moth"></div>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Game Boy Controls -->
+      <div class="tamagotchi__controls">
+        <!-- D-Pad -->
+        <div class="tamagotchi__dpad">
+          <div
+            class="tamagotchi__dpad-btn tamagotchi__dpad-btn--up js_dpad-up"
+          ></div>
+          <div
+            class="tamagotchi__dpad-btn tamagotchi__dpad-btn--right js_dpad-right"
+          ></div>
+          <div
+            class="tamagotchi__dpad-btn tamagotchi__dpad-btn--down js_dpad-down"
+          ></div>
+          <div
+            class="tamagotchi__dpad-btn tamagotchi__dpad-btn--left js_dpad-left"
+          ></div>
+          <div class="tamagotchi__dpad-btn tamagotchi__dpad-btn--center"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="tamagotchi__action-buttons">
+          <button
+            class="tamagotchi__action-btn tamagotchi__action-btn--b js_btn-b"
+          >
+            B
+          </button>
+          <button
+            class="tamagotchi__action-btn tamagotchi__action-btn--a js_btn-a"
+          >
+            A
+          </button>
+        </div>
+      </div>
+
+      <!-- System Buttons (SELECT/RESET) -->
+      <div class="tamagotchi__system-buttons">
+        <button class="tamagotchi__system-button js_select-btn">Select</button>
+        <button class="tamagotchi__system-button js_reset-btn">Reset</button>
+      </div>
+
+      <!-- Speaker Grills -->
+      <div class="tamagotchi__speaker">
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+        <div class="tamagotchi__speaker-dot"></div>
+      </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+  </body>
+</html>
