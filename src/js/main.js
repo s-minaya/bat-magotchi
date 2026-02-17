@@ -53,6 +53,9 @@ const intervalTime = 10000; // 10 segundos
 const EAT_DURATION = 2100;
 const REACTION_DURATION = 1000;
 
+// Clave de localStorage
+const SAVE_KEY = "batmagotchi_save";
+
 // ======================= // ESTADO DEL JUEGO // =======================
 
 // Índice del corazón actual (empezamos por el último)
@@ -83,6 +86,93 @@ const gameStartSound = new Audio("/sounds/game-start.mp3");
 
 bgMusic.loop = true;
 bgMusic.volume = 0.2;
+
+// ======================= // PERSISTENCIA (LOCALSTORAGE) // =======================
+
+/**
+ * Guarda el estado actual del juego en localStorage.
+ * Solo persiste si el juego está en curso (no muerto, no pausado entre sesiones).
+ */
+function saveGame() {
+  // No guardamos si el juego ha terminado
+  if (isDead()) return;
+
+  const saveData = {
+    currentHeartIndex,
+    currentState,
+    emptyHeartsCount,
+    savedAt: Date.now(),
+  };
+
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+  } catch (e) {
+    // localStorage puede fallar en modo privado o sin espacio
+    console.warn("No se pudo guardar el progreso:", e);
+  }
+}
+
+/**
+ * Carga el estado guardado y lo devuelve, o null si no hay guardado válido.
+ */
+function loadGame() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+
+    const data = JSON.parse(raw);
+
+    // Validación básica de integridad
+    if (
+      typeof data.currentHeartIndex !== "number" ||
+      typeof data.currentState !== "number" ||
+      typeof data.emptyHeartsCount !== "number"
+    ) {
+      return null;
+    }
+
+    // Si todos los corazones estaban vacíos al guardar, no restauramos
+    if (data.emptyHeartsCount >= hearts.length) return null;
+
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Elimina el guardado de localStorage (al reiniciar o al morir).
+ */
+function clearSave() {
+  try {
+    localStorage.removeItem(SAVE_KEY);
+  } catch (e) {
+    console.warn("No se pudo borrar el guardado:", e);
+  }
+}
+
+/**
+ * Aplica un estado cargado visualmente y en las variables del juego.
+ */
+function applyLoadedState(data) {
+  currentHeartIndex = data.currentHeartIndex;
+  currentState = data.currentState;
+  emptyHeartsCount = data.emptyHeartsCount;
+
+  // Reconstruir el estado visual de cada corazón
+  hearts.forEach((heart, index) => {
+    if (index > currentHeartIndex) {
+      // Corazones a la derecha del actual: ya vacíos
+      setHeartState(heart, 2);
+    } else if (index === currentHeartIndex) {
+      // Corazón actual: refleja currentState
+      setHeartState(heart, currentState);
+    } else {
+      // Corazones a la izquierda del actual: llenos
+      setHeartState(heart, 0);
+    }
+  });
+}
 
 // ======================= // FUNCIONES DE UTILIDAD // =======================
 
@@ -178,6 +268,7 @@ function resetGame() {
   // Detener todo
   pauseHearts();
   hideFoodMenu();
+  clearSave();
 
   // Ocultar pantalla de Game Over si está visible
   gameoverScreen.classList.remove("gameover--visible");
@@ -270,6 +361,7 @@ function degradeHeart() {
     animateHeart(heart);
     soundEffect.play();
     currentState = 1;
+    saveGame();
 
     // Corazón medio → vacío
   } else if (currentState === 1) {
@@ -282,6 +374,7 @@ function degradeHeart() {
 
     // Si todos los corazones están vacíos, el murciélago muere
     if (emptyHeartsCount >= hearts.length) {
+      clearSave();
       setBat(batStates.dead);
       bgMusic.pause();
       bgMusic.src = "/sounds/game-over.mp3";
@@ -293,6 +386,7 @@ function degradeHeart() {
       }, 1500);
     } else {
       applyBatState();
+      saveGame();
     }
 
     // Pasamos al siguiente corazón (el de la izquierda)
@@ -332,6 +426,7 @@ function gainOneHeart() {
   }
 
   applyBatState();
+  saveGame();
 }
 
 function restoreAllHearts() {
@@ -340,6 +435,7 @@ function restoreAllHearts() {
   currentState = 0;
   emptyHeartsCount = 0;
   applyBatState();
+  saveGame();
 }
 
 function isFullHealth() {
@@ -448,7 +544,16 @@ introStart.addEventListener("click", () => {
     "animationend",
     () => {
       intro.style.display = "none";
-      setBat(batStates.normal);
+
+      // Intentar restaurar partida guardada
+      const saved = loadGame();
+      if (saved) {
+        applyLoadedState(saved);
+        setBat(calculateBatState());
+      } else {
+        setBat(batStates.normal);
+      }
+
       heartInterval = setInterval(degradeHeart, intervalTime);
     },
     { once: true },

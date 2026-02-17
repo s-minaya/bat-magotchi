@@ -198,15 +198,12 @@ body {
     }
   }
 
-  // Botones SELECT y RESET 
+  // ======================= BOTONES SELECT Y RESET =======================
   &__system-buttons {
-    position: absolute;
-    bottom: 5.5rem;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
+    justify-content: center;
     gap: 2rem;
-    z-index: 5;
+    margin-top: 1.8rem;
   }
 
   &__system-button {
@@ -1017,6 +1014,14 @@ body {
       width: 3.5rem;
       height: 3.5rem;
       font-size: 1.5rem;
+    }
+
+    &__system-buttons {
+      position: absolute;
+      bottom: 5.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 0;
     }
   }
 }

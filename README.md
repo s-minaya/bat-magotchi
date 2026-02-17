@@ -6,7 +6,7 @@
 
 Mantén vivo a tu murciélago alimentándolo con diferentes comidas antes de que sus corazones se vacíen. Pero ten cuidado: ¡no toda la comida es buena para él!
 
-🎮 **[JUEGA AHORA - Demo en vivo](URL_DE_DEMO_AQUI)**
+🎮 **[JUEGA AHORA - Demo en vivo](https://s-minaya.github.io/bat-magotchi/)**
 
 ## ✨ Características
 
@@ -21,6 +21,7 @@ Mantén vivo a tu murciélago alimentándolo con diferentes comidas antes de que
 - 🎵 **Música de fondo y efectos de sonido** con control de volumen
 - ⏸️ **Sistema de pausa** (botón SELECT o tecla P)
 - 🔄 **Función de reinicio** (botón RESET o tecla R)
+- 💾 **Guardado automático** — tu progreso se conserva aunque cierres el navegador
 - 💀 **Pantalla de Game Over** con opción de reintentar
 - 📱 **Totalmente responsive** - Juega en móvil, tablet o escritorio
 - 🎭 **Animaciones fluidas** y transiciones suaves
@@ -202,6 +203,12 @@ bat-magotchi/
 - El ajo puede matar instantáneamente si está en el último medio corazón
 - Durante las animaciones de comer, el temporizador se pausa
 
+### 💾 Guardado Automático
+
+El progreso se guarda automáticamente en el navegador usando `localStorage`. Esto significa que si cierras la pestaña o el navegador, al volver a cargar el juego tu murciélago seguirá exactamente en el estado en que lo dejaste: con los mismos corazones y la misma salud.
+
+El guardado se borra automáticamente cuando el murciélago muere o cuando reinicias manualmente la partida con el botón RESET.
+
 ## 🌟 Características Técnicas
 
 ### Performance
@@ -217,6 +224,12 @@ bat-magotchi/
 - Controles por teclado completos
 - Contraste adecuado en UI
 - Feedback visual y auditivo
+
+### Persistencia
+
+- Guardado automático del estado del juego con `localStorage`
+- Restauración del progreso al recargar la página
+- Limpieza automática del guardado en Game Over o reinicio manual
 
 ### Responsive Design
 
