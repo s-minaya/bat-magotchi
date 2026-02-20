@@ -80,9 +80,9 @@ let selectedFoodIndex = 0;
 
 // ======================= // AUDIO // =======================
 
-const soundEffect = new Audio("/sounds/heart-down.mp3");
-const bgMusic = new Audio("/sounds/background.ogg");
-const gameStartSound = new Audio("/sounds/game-start.mp3");
+const soundEffect = new Audio("sounds/heart-down.mp3");
+const bgMusic = new Audio("sounds/background.ogg");
+const gameStartSound = new Audio("sounds/game-start.mp3");
 
 bgMusic.loop = true;
 bgMusic.volume = 0.2;
@@ -289,7 +289,7 @@ function resetGame() {
   // Reiniciar música
   bgMusic.pause();
   bgMusic.currentTime = 0;
-  bgMusic.src = "/sounds/background.ogg";
+  bgMusic.src = "sounds/background.ogg";
   if (!bgMusic.paused || startBtn.innerHTML.includes("volume-xmark")) {
     bgMusic.play();
   }
@@ -377,7 +377,7 @@ function degradeHeart() {
       clearSave();
       setBat(batStates.dead);
       bgMusic.pause();
-      bgMusic.src = "/sounds/game-over.mp3";
+      bgMusic.src = "sounds/game-over.mp3";
       bgMusic.play();
 
       // Mostrar pantalla de Game Over después de un breve delay
