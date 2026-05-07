@@ -5,6 +5,7 @@
 const startBtn = document.querySelector("#startAudio");
 const intro = document.querySelector(".js_intro");
 const introStart = document.querySelector("#introStart");
+const tamagotchiEl = document.querySelector(".tamagotchi");
 
 // Game Over
 const gameoverScreen = document.querySelector(".js_gameover");
@@ -691,3 +692,45 @@ document.addEventListener("keydown", (e) => {
       break;
   }
 });
+
+// ======================= // FIT TO SCREEN (DESKTOP) // =======================
+
+function fitToScreen() {
+  if (window.innerWidth < 768) {
+    tamagotchiEl.style.transform = "";
+    tamagotchiEl.style.transformOrigin = "";
+    return;
+  }
+
+  // Expandimos la comida sin transición para medir la altura máxima real.
+  // Al ser síncrono, el navegador nunca llega a pintar este estado.
+  const foodVisible = foodMenuVisible;
+  if (!foodVisible) {
+    foodsContainer.style.cssText =
+      "transition:none;max-height:12rem;padding:1rem;opacity:0;pointer-events:none;";
+  }
+
+  void tamagotchiEl.offsetHeight; // forzar reflow síncrono
+
+  const bodyStyle = getComputedStyle(document.body);
+  const vPad =
+    parseFloat(bodyStyle.paddingTop) + parseFloat(bodyStyle.paddingBottom);
+  const availableH = window.innerHeight - vPad;
+  const naturalH = tamagotchiEl.offsetHeight;
+
+  if (!foodVisible) {
+    foodsContainer.style.cssText = ""; // restaurar al estado CSS normal
+  }
+
+  if (naturalH > availableH) {
+    const scale = availableH / naturalH;
+    tamagotchiEl.style.transform = `scale(${scale})`;
+    tamagotchiEl.style.transformOrigin = "top center";
+  } else {
+    tamagotchiEl.style.transform = "";
+    tamagotchiEl.style.transformOrigin = "";
+  }
+}
+
+window.addEventListener("resize", fitToScreen);
+fitToScreen();
